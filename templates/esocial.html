@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>{{ title }}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-badge">E</div><div>EDGE<small>E-SOCIAL</small></div></div>
+    <div class="nav-card">
+      <a class="nav-link" href="{{ url_for('home') }}">🏠 Início</a>
+      <a class="nav-link" href="{{ url_for('relatorios') }}">📊 Relatórios</a>
+      <a class="nav-link" href="{{ url_for('encaminhamentos') }}">📄 Encaminhamentos</a>
+      <a class="nav-link" href="{{ url_for('renumerador') }}">🔢 Renumerador</a>
+      <a class="nav-link active" href="{{ url_for('esocial') }}">🗂️ E-SOCIAL</a>
+      <a class="nav-link" href="{{ url_for('fisico_mental') }}">🩺 Físico e Mental</a>
+    </div>
+  </aside>
+  <main class="main-area">
+    <div class="topbar compact-topbar">
+      <div class="page-title"><h1>E-SOCIAL EVELLYN</h1></div>
+      <div class="user-pill"><div class="avatar"></div><div><strong>EDGE</strong><div class="muted">Processamento final</div></div></div>
+    </div>
+
+    <section class="content-card">
+      {% with messages = get_flashed_messages() %}{% if messages %}<div class="alert error">{% for message in messages %}<div>{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+      <form id="uploadForm" action="{{ url_for('esocial_processar') }}" method="post" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="field col-2"><label>Planilha base</label><input type="file" name="base_file" id="baseFile" required><small>Colunas esperadas: FUNCIONÁRIO, TIPO DE EXAME, DEPOSITANTE e coluna da empresa.</small></div>
+          <div class="field col-2"><label>Aba da planilha base</label><select name="base_sheet" id="baseSheetSelect"><option value="">Carregue a planilha base primeiro</option></select></div>
+          <div class="field col-2"><label>Adicionar RELFUNCGERAL por arquivo</label><input type="file" id="relFilesPicker" multiple></div>
+          <div class="field col-2"><label>Adicionar RELFUNCGERAL por pasta</label><input type="file" id="relFolderPicker" webkitdirectory directory multiple></div>
+        </div>
+        <div class="toolbar" style="margin:16px 0">
+          <button type="button" class="btn btn--light" id="clearAllBtn">Limpar lista</button>
+          <span class="helper-box" id="selectionSummary">Nenhum arquivo selecionado.</span>
+          <span class="selected-chip" id="fileCount">0 arquivo(s)</span>
+        </div>
+        <div class="table-wrap"><table class="file-table"><thead><tr><th>Arquivo</th><th>Origem</th><th>Ação</th></tr></thead><tbody id="fileListBody"><tr class="empty-row"><td colspan="3">Nenhum RELFUNCGERAL selecionado.</td></tr></tbody></table></div>
+        <input type="file" name="rel_files" id="hiddenRelFiles" multiple hidden>
+        <div class="actions"><button type="submit" class="btn btn--primary">Processar e baixar ZIP final</button></div>
+      </form>
+    </section>
+  </main>
+</div>
+<div class="loading-overlay is-hidden" id="loadingOverlay" aria-hidden="true"><div class="loading-card"><div class="spinner"></div><h3>Processando arquivos</h3></div></div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>

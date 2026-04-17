@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Encaminhamentos</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-badge">E</div><div>EDGE<small>Encaminhamentos</small></div></div>
+    <div class="nav-card">
+      <a class="nav-link" href="{{ url_for('home') }}">🏠 Início</a>
+      <a class="nav-link" href="{{ url_for('relatorios') }}">📊 Relatórios</a>
+      <a class="nav-link active" href="{{ url_for('encaminhamentos') }}">📄 Encaminhamentos</a>
+      <a class="nav-link" href="{{ url_for('renumerador') }}">🔢 Renumerador</a>
+      <a class="nav-link" href="{{ url_for('esocial') }}">🗂️ E-SOCIAL</a>
+      <a class="nav-link" href="{{ url_for('fisico_mental') }}">🩺 Físico e Mental</a>
+    </div>
+  </aside>
+  <main class="main-area">
+    <div class="topbar compact-topbar"><div class="page-title"><h1>Encaminhamentos</h1></div></div>
+    <section class="content-card">
+      {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="alert error">{{ m }}</div>{% endfor %}{% endwith %}
+      <form method="POST" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="field col-4"><label for="file">Planilha Base do Mês</label><input type="file" id="file" name="file" required></div>
+        </div>
+        <div class="helper-box" style="margin-top:16px">Usa a coluna <strong>Complementares</strong>, separando por <strong>;</strong>.</div>
+        <div class="actions"><button class="btn btn--primary" type="submit">Gerar encaminhamentos</button></div>
+      </form>
+    </section>
+  </main>
+</div>
+</body></html>

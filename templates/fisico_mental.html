@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-badge">E</div>
+      <div>EDGE<small>Físico e Mental</small></div>
+    </div>
+    <div class="nav-card">
+      <a class="nav-link" href="{{ url_for('home') }}">🏠 Início</a>
+      <a class="nav-link active" href="{{ url_for('fisico_mental') }}">🩺 Criar atestado</a>
+      <a class="nav-link" href="{{ url_for('fisico_mental_cadastros') }}">🏢 Cadastros</a>
+      <a class="nav-link" href="{{ url_for('relatorios') }}">📊 Relatórios</a>
+      <a class="nav-link" href="{{ url_for('encaminhamentos') }}">📄 Encaminhamentos</a>
+      <a class="nav-link" href="{{ url_for('renumerador') }}">🔢 Renumerador</a>
+      <a class="nav-link" href="{{ url_for('esocial') }}">🗂️ E-SOCIAL</a>
+    </div>
+
+  </aside>
+
+  <main class="main-area">
+    <div class="topbar compact-topbar">
+      <div class="page-title">
+        <h1>Físico e Mental</h1>
+      </div>
+      <div class="user-pill"><div class="avatar"></div><div><strong>EDGE</strong><div class="muted">Formulário compacto</div></div></div>
+    </div>
+
+    <section class="content-card" id="formulario">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <div class="section-head">
+        <div>
+          <h2>Criar documento</h2>
+        </div>
+        <a class="btn btn--light" href="{{ url_for('fisico_mental_cadastros') }}">Editar cadastros</a>
+      </div>
+
+      <form action="{{ url_for('fisico_gerar') }}" method="post" id="fisicoForm">
+        <div class="form-grid">
+          <div class="field col-2">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" type="text" required placeholder="Nome completo do paciente" value="{{ form_data.get('nome','') }}">
+          </div>
+
+          <div class="field col-2 list-panel">
+            <label for="empresa_search">Empresa</label>
+            <input id="empresa_search" type="text" placeholder="Digite parte do nome da empresa" autocomplete="off">
+            <input type="hidden" id="empresa_nome" name="empresa_nome" value="{{ form_data.get('empresa_nome','') }}">
+            <select id="empresa_select" size="5" style="margin-top:10px">
+              {% for empresa in empresas %}
+                <option value="{{ empresa['nome'] }}" {% if form_data.get('empresa_nome','') == empresa['nome'] %}selected{% endif %}>{{ empresa['nome'] }}</option>
+              {% endfor %}
+            </select>
+            
+            <span class="selected-chip" id="empresaEscolhida">{{ form_data.get('empresa_nome','Nenhuma empresa selecionada') }}</span>
+          </div>
+
+          <div class="field col-1">
+            <label for="rg">Número RG</label>
+            <input id="rg" name="rg" type="text" required placeholder="Ex.: 6903031" value="{{ form_data.get('rg','') }}">
+          </div>
+
+          <div class="field col-1">
+            <label for="cpf">CPF</label>
+            <input id="cpf" name="cpf" type="text" required maxlength="14" placeholder="000.000.000-00" value="{{ form_data.get('cpf','') }}">
+          </div>
+
+          <div class="field col-1">
+            <label for="edital">Edital</label>
+            <input id="edital" name="edital" type="text" placeholder="Ex.: EDITAL Nº 01" value="{{ form_data.get('edital','') }}">
+          </div>
+
+          <div class="field col-1">
+            <label for="pss">PSS</label>
+            <input id="pss" name="pss" type="text" placeholder="Ex.: PSS Nº 02/2023" value="{{ form_data.get('pss','') }}">
+          </div>
+
+          <div class="field col-2 list-panel">
+            <label for="cargo_search">Cargo</label>
+            <input id="cargo_search" type="text" placeholder="Digite parte do nome do cargo" autocomplete="off">
+            <input type="hidden" id="funcao_nome" name="funcao_nome" value="{{ form_data.get('funcao_nome','') }}">
+            <select id="cargo_select" size="5" style="margin-top:10px">
+              {% for cargo in cargos %}
+                <option value="{{ cargo['nome'] }}" {% if form_data.get('funcao_nome','') == cargo['nome'] %}selected{% endif %}>{{ cargo['nome'] }}</option>
+              {% endfor %}
+            </select>
+            
+            <span class="selected-chip" id="cargoEscolhido">{{ form_data.get('funcao_nome','Nenhum cargo selecionado') }}</span>
+          </div>
+
+          <div class="field col-1">
+            <label for="data_exame">Data</label>
+            <input id="data_exame" name="data_exame" type="date" value="{{ form_data.get('data_exame', today) }}">
+          </div>
+
+          <div class="field col-1">
+            <label for="formato">Formato de saída</label>
+            <select id="formato" name="formato">
+              <option value="docx" {% if form_data.get('formato','docx') == 'docx' %}selected{% endif %}>Word (.docx)</option>
+              <option value="pdf" {% if form_data.get('formato','') == 'pdf' %}selected{% endif %}>PDF</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions inline-actions">
+          <button class="btn btn--primary" type="submit">Gerar documento</button>
+          <a class="btn btn--light" href="{{ url_for('fisico_mental_cadastros') }}">Gerenciar empresas e cargos</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</div>
+<script>
+const empresaSelect = document.getElementById('empresa_select');
+const empresaSearch = document.getElementById('empresa_search');
+const empresaNome = document.getElementById('empresa_nome');
+const empresaEscolhida = document.getElementById('empresaEscolhida');
+const cargoSelect = document.getElementById('cargo_select');
+const cargoSearch = document.getElementById('cargo_search');
+const funcaoNome = document.getElementById('funcao_nome');
+const cargoEscolhido = document.getElementById('cargoEscolhido');
+const cpfInput = document.getElementById('cpf');
+
+function applyCpfMask(value){
+  const digits = value.replace(/\D/g,'').slice(0,11);
+  return digits
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+cpfInput.addEventListener('input', e => { e.target.value = applyCpfMask(e.target.value); });
+cpfInput.value = applyCpfMask(cpfInput.value);
+
+function filterSelect(selectEl, searchText){
+  const term = (searchText || '').toUpperCase();
+  let firstVisible = null;
+  Array.from(selectEl.options).forEach(opt => {
+    const visible = !term || opt.text.toUpperCase().includes(term);
+    opt.hidden = !visible;
+    if (visible && !firstVisible) firstVisible = opt;
+  });
+  return firstVisible;
+}
+
+function bindSearch(searchEl, selectEl, hiddenEl, chipEl, emptyText){
+  searchEl.addEventListener('input', () => {
+    const firstVisible = filterSelect(selectEl, searchEl.value);
+    if (firstVisible) firstVisible.selected = true;
+  });
+
+  selectEl.addEventListener('change', () => {
+    const selected = selectEl.options[selectEl.selectedIndex];
+    if (!selected) return;
+    hiddenEl.value = selected.value;
+    chipEl.textContent = selected.value || emptyText;
+  });
+
+  const initialSelected = selectEl.options[selectEl.selectedIndex];
+  if (initialSelected && initialSelected.value) {
+    hiddenEl.value = initialSelected.value;
+    chipEl.textContent = initialSelected.value;
+  }
+}
+
+bindSearch(empresaSearch, empresaSelect, empresaNome, empresaEscolhida, 'Nenhuma empresa selecionada');
+bindSearch(cargoSearch, cargoSelect, funcaoNome, cargoEscolhido, 'Nenhum cargo selecionado');
+</script>
+</body>
+</html>

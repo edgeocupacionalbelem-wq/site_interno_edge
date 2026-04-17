@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-badge">E</div>
+      <div>EDGE<small>Sistema unificado</small></div>
+    </div>
+    <div class="nav-card">
+      <a class="nav-link active" href="{{ url_for('home') }}">🏠 Início</a>
+      <a class="nav-link" href="{{ url_for('relatorios') }}">📊 Relatórios</a>
+      <a class="nav-link" href="{{ url_for('encaminhamentos') }}">📄 Encaminhamentos</a>
+      <a class="nav-link" href="{{ url_for('renumerador') }}">🔢 Renumerador</a>
+      <a class="nav-link" href="{{ url_for('esocial') }}">🗂️ E-SOCIAL</a>
+      <a class="nav-link" href="{{ url_for('fisico_mental') }}">🩺 Físico e Mental</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <div class="topbar compact-topbar">
+      <div class="page-title"><h1>{{ title }}</h1></div>
+      <div class="user-pill"><div class="avatar"></div><div><strong>EDGE</strong></div></div>
+    </div>
+
+    <section class="dashboard-grid compact-cards">
+      <div class="feature-card"><h3>Relatórios</h3><a class="btn btn--primary" href="{{ url_for('relatorios') }}">Abrir</a></div>
+      <div class="feature-card"><h3>Encaminhamentos</h3><a class="btn btn--primary" href="{{ url_for('encaminhamentos') }}">Abrir</a></div>
+      <div class="feature-card"><h3>Renumerador</h3><a class="btn btn--primary" href="{{ url_for('renumerador') }}">Abrir</a></div>
+      <div class="feature-card"><h3>E-SOCIAL</h3><a class="btn btn--primary" href="{{ url_for('esocial') }}">Abrir</a></div>
+      <div class="feature-card"><h3>Físico e Mental</h3><a class="btn btn--primary" href="{{ url_for('fisico_mental') }}">Abrir</a></div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

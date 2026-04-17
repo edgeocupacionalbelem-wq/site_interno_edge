@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-badge">E</div><div>EDGE<small>Cadastros</small></div></div>
+    <div class="nav-card">
+      <a class="nav-link" href="{{ url_for('home') }}">🏠 Início</a>
+      <a class="nav-link" href="{{ url_for('fisico_mental') }}">🩺 Criar atestado</a>
+      <a class="nav-link active" href="{{ url_for('fisico_mental_cadastros') }}">🏢 Empresas e cargos</a>
+      <a class="nav-link" href="{{ url_for('esocial') }}">🗂️ E-SOCIAL</a>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <div class="topbar">
+      <div class="page-title">
+        <h1>Cadastros</h1>
+        <p>Empresas e cargos globais com busca parcial, edição e exclusão.</p>
+      </div>
+      <a class="btn btn--light" href="{{ url_for('fisico_mental') }}">Voltar ao Físico e Mental</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <section class="content-card" style="margin-bottom:18px">
+      <form class="searchbar" method="get" action="{{ url_for('fisico_mental_cadastros') }}">
+        <input type="text" name="q" placeholder="Buscar digitando parte do nome da empresa ou do cargo" value="{{ search }}">
+        <button class="btn btn--primary" type="submit">Buscar</button>
+        <a class="btn btn--light" href="{{ url_for('fisico_mental_cadastros') }}">Limpar</a>
+      </form>
+    </section>
+
+    <div class="dashboard-grid" style="grid-template-columns:1fr 1fr">
+      <section class="content-card">
+        <div class="section-head"><div><h2>Empresas</h2></div></div>
+        <form class="searchbar" method="post" action="{{ url_for('fisico_adicionar_empresa') }}" style="margin-bottom:10px">
+          <input type="text" name="nome" placeholder="Nome da empresa" required>
+          <button class="btn btn--primary" type="submit">Cadastrar empresa</button>
+        </form>
+        <div class="item-list">
+          {% if empresas %}
+            {% for empresa in empresas %}
+            <div class="item">
+              <div style="flex:1"><div><strong>{{ empresa['nome'] }}</strong></div><div class="muted">Empresa cadastrada</div></div>
+              <div class="row-actions">
+                <details>
+                  <summary class="btn btn--light">Editar</summary>
+                  <form style="margin-top:10px" method="post" action="{{ url_for('fisico_editar_empresa') }}">
+                    <input type="hidden" name="id" value="{{ empresa['id'] }}">
+                    <input type="text" name="nome" value="{{ empresa['nome'] }}" required>
+                    <button class="btn btn--primary" type="submit" style="margin-top:8px">Salvar</button>
+                  </form>
+                </details>
+                <form method="post" action="{{ url_for('fisico_excluir_empresa') }}" onsubmit="return confirm('Excluir esta empresa?');">
+                  <input type="hidden" name="id" value="{{ empresa['id'] }}">
+                  <button class="btn btn--danger" type="submit">Excluir</button>
+                </form>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="muted">Nenhuma empresa encontrada.</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="content-card">
+        <div class="section-head"><div><h2>Cargos globais</h2></div></div>
+        <form class="searchbar" method="post" action="{{ url_for('fisico_adicionar_cargo') }}" style="margin-bottom:10px">
+          <input type="text" name="nome" placeholder="Nome do cargo" required>
+          <button class="btn btn--primary" type="submit">Cadastrar cargo</button>
+        </form>
+        <div class="item-list">
+          {% if cargos %}
+            {% for cargo in cargos %}
+            <div class="item">
+              <div style="flex:1"><div><strong>{{ cargo['nome'] }}</strong></div><div class="muted">Disponível para todas as empresas</div></div>
+              <div class="row-actions">
+                <details>
+                  <summary class="btn btn--light">Editar</summary>
+                  <form style="margin-top:10px" method="post" action="{{ url_for('fisico_editar_cargo') }}">
+                    <input type="hidden" name="id" value="{{ cargo['id'] }}">
+                    <input type="text" name="nome" value="{{ cargo['nome'] }}" required>
+                    <button class="btn btn--primary" type="submit" style="margin-top:8px">Salvar</button>
+                  </form>
+                </details>
+                <form method="post" action="{{ url_for('fisico_excluir_cargo') }}" onsubmit="return confirm('Excluir este cargo?');">
+                  <input type="hidden" name="id" value="{{ cargo['id'] }}">
+                  <button class="btn btn--danger" type="submit">Excluir</button>
+                </form>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="muted">Nenhum cargo encontrado.</p>
+          {% endif %}
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Relatórios</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-badge">E</div><div>EDGE<small>Relatórios</small></div></div>
+    <div class="nav-card">
+      <a class="nav-link" href="{{ url_for('home') }}">🏠 Início</a>
+      <a class="nav-link active" href="{{ url_for('relatorios') }}">📊 Relatórios</a>
+      <a class="nav-link" href="{{ url_for('encaminhamentos') }}">📄 Encaminhamentos</a>
+      <a class="nav-link" href="{{ url_for('renumerador') }}">🔢 Renumerador</a>
+      <a class="nav-link" href="{{ url_for('esocial') }}">🗂️ E-SOCIAL</a>
+      <a class="nav-link" href="{{ url_for('fisico_mental') }}">🩺 Físico e Mental</a>
+    </div>
+  </aside>
+  <main class="main-area">
+    <div class="topbar compact-topbar"><div class="page-title"><h1>Relatório de Periódicos</h1></div></div>
+    <section class="content-card">
+      {% with messages = get_flashed_messages() %}{% for m in messages %}<div class="alert error">{{ m }}</div>{% endfor %}{% endwith %}
+      <form method="POST" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="field col-1"><label for="mes">Mês (1 a 12)</label><input type="number" id="mes" name="mes" min="1" max="12" required></div>
+          <div class="field col-3"><label for="files">Planilhas</label><input type="file" id="files" name="files" multiple required></div>
+        </div>
+        <div class="helper-box" style="margin-top:16px">Gera <strong>Relatório</strong> e <strong>Base do Mês</strong>, entregues juntos em um ZIP.</div>
+        <div class="actions"><button class="btn btn--primary" type="submit">Gerar arquivos</button></div>
+      </form>
+    </section>
+  </main>
+</div>
+</body>
+</html>
